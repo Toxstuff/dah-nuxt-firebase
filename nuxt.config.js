@@ -8,22 +8,22 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: process.env.npm_package_name || '',
+    title: process.env.npm_package_name || "",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: 'description',
-        name: 'description',
-        content: process.env.npm_package_description || '',
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || "",
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: "#fff" },
   /*
    ** Global CSS
    */
@@ -36,31 +36,33 @@ export default {
    ** Nuxt.js modules
    */
   buildModules: [
-    '@nuxtjs/vuetify',
+    "@nuxtjs/vuetify",
     [
-      '@nuxtjs/firebase',
+      "@nuxtjs/firebase",
       {
         config: {
-          apiKey: "AIzaSyAnLhDGY9RgazRkWY69OWt8ct1YqvOHlYo",
-          authDomain: "dah-nuxt-firebase-3345c.firebaseapp.com",
-          databaseURL: "https://dah-nuxt-firebase-3345c-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "dah-nuxt-firebase-3345c",
-          storageBucket: "dah-nuxt-firebase-3345c.appspot.com",
-          messagingSenderId: "193806619809",
-          appId: "1:193806619809:web:cdfbf0c5660bfb1d1f4ce0"
+          apiKey: "AIzaSyBWeELg8PikD9-cn-nwJ650WR8qumq2_tE",
+          authDomain: "dah-nuxt-firebase-c9341.firebaseapp.com",
+          databaseURL:
+            "https://dah-nuxt-firebase-c9341-default-rtdb.europe-west1.firebasedatabase.app/",
+          projectId: "dah-nuxt-firebase-c9341",
+          storageBucket: "dah-nuxt-firebase-c9341.appspot.com",
+          messagingSenderId: "24883552909",
+          appId: "1:24883552909:web:00d54c7e524e2984d538c4",
+          measurementId: "G-R1H04RLWDP",
         },
         services: {
           firestore: true,
           auth: {
-            persistence: 'local', // default
+            persistence: "local", // default
             initialize: {
-              onAuthStateChangedMutation: 'ON_AUTH_STATE_CHANGED_MUTATION',
-              onAuthStateChangedAction: 'onAuthStateChangedAction',
-              subscribeManually: false
+              onAuthStateChangedMutation: "ON_AUTH_STATE_CHANGED_MUTATION",
+              onAuthStateChangedAction: "onAuthStateChangedAction",
+              subscribeManually: false,
             },
-          }
+          },
         },
       },
     ],
   ],
-}
+};
