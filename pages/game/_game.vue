@@ -1,8 +1,7 @@
 <template>
   <v-container class="game-screen">
     <user-login v-if="!isLoggedIn" @login="addPlayer"></user-login>
-
-    <div class="game-lobby" v-if="!gameStarted">
+    <div class="game-lobby" v-if="!game.gameStarted">
       <player-list
         v-if="game && isLoggedIn"
         :players="game.players"
@@ -81,7 +80,8 @@ export default {
     },
 
     async startGame() {
-      this.gameStarted = true;
+      this.gameStarted = true,
+
 
       //make heap
 
