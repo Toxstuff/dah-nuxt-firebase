@@ -73,7 +73,6 @@ export default {
         .collection("users")
         .doc(uid)
         .set({ name: this.playerName });
-
       const gameId = Math.floor(Date.now() * Math.random()).toString(36);
       this.$fire.firestore
         .collection("games")
@@ -81,7 +80,7 @@ export default {
         .set({
           creator: uid,
           deckNames: this.chosenDecks,
-          gameStarted: false;
+          gameStarted: false,
           players: [
             {
               name: this.playerName,

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="game-screen">
+  <v-container class="game-screen" v-if="game">
     <user-login v-if="!isLoggedIn" @login="addPlayer"></user-login>
     <div class="game-lobby" v-if="!game.gameStarted">
       <player-list
@@ -9,6 +9,8 @@
 
       <v-btn v-if="canStart" @click="startGame">Start Game</v-btn>
     </div>
+    <v-btn @click="startGame">Debug Start</v-btn>
+    <div class="runningGame" v-if="gameStarted"></div>
   </v-container>
 </template>
 
@@ -56,6 +58,7 @@ export default {
         console.log(user);
       }
     });
+    await this.$store.dispatch("bindDecks");
   },
 
   methods: {
@@ -80,14 +83,23 @@ export default {
     },
 
     async startGame() {
-      this.gameStarted = true,
-
+      this.gameRef.update({
+        gameStarted: true,
+      });
 
       //make heap
+      const allDecks = this.$store.state.decks;
+      const blackPile = [];
+      const ourDecks = allDecks.filter((deck) =>
+        this.game.deckNames.includes(deck.name)
+      );
 
       //deal cards
 
       //determine start player/master
+      this.gameRef.update({
+        cardMaster: 0,
+      });
     },
   },
 };
