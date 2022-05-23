@@ -83,22 +83,42 @@ export default {
     },
 
     async startGame() {
-      this.gameRef.update({
+      await this.gameRef.update({
         gameStarted: true,
       });
-
       //make heap
-      const allDecks = this.$store.state.decks;
-      const blackPile = [];
-      const ourDecks = allDecks.filter((deck) =>
-        this.game.deckNames.includes(deck.name)
-      );
+      await this.makeHeap();
 
       //deal cards
+      this.game.players.forEach((player) => {
+        while (player.hand.length < 10) {
+          const cardNumber = Math.floor(
+            Math.random() * this.game.whitePile.length
+          );
+          player.hand.push(this.game.whitePile[cardNumber]);
+        }
+      });
 
       //determine start player/master
       this.gameRef.update({
         cardMaster: 0,
+      });
+    },
+
+    async makeHeap() {
+      const allDecks = this.$store.state.decks;
+      const blackPile = [];
+      const whitePile = [];
+      const ourDecks = allDecks.filter((deck) =>
+        this.game.deckNames.includes(deck.name)
+      );
+      ourDecks.forEach((deck) => {
+        deck.black.forEach((card) => blackPile.push(card));
+        deck.white.forEach((card) => whitePile.push(card));
+      });
+      await this.gameRef.update({
+        blackPile: blackPile,
+        whitePile: whitePile,
       });
     },
   },
