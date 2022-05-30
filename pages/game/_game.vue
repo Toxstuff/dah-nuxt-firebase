@@ -1,6 +1,7 @@
 <template>
   <v-container class="game-screen" v-if="game">
     <user-login v-if="!isLoggedIn" @login="addPlayer"></user-login>
+
     <div class="game-lobby" v-if="!game.gameStarted">
       <player-list
         v-if="game && isLoggedIn"
@@ -9,8 +10,16 @@
 
       <v-btn v-if="canStart" @click="startGame">Start Game</v-btn>
     </div>
-    <v-btn @click="startGame">Debug Start</v-btn>
-    <div class="runningGame" v-if="gameStarted"></div>
+
+    <v-btn v-if="!game.gameStarted" @click="startGame">Debug game start</v-btn>
+    <v-btn v-if="game.gameStarted" @click="game.cardMaster++"
+      >Debug next round</v-btn
+    >
+    <div class="runningGame" v-if="game.gameStarted">
+      <v-card elevation="10" outlined dark
+        ><v-card-text>{{ game.blackCard.text }}</v-card-text></v-card
+      >
+    </div>
   </v-container>
 </template>
 
@@ -23,10 +32,19 @@ export default {
       game: null,
       gameRef: null,
       isLoggedIn: false,
-      gameStarted: false,
     };
   },
-
+  watch: {
+    isCardMaster() {
+      console.log("new round");
+      const blackCard = this.game.blackPile[
+        Math.floor(Math.random() * this.game.blackPile.length)
+      ];
+      this.gameRef.update({
+        blackCard: blackCard,
+      });
+    },
+  },
   computed: {
     canStart() {
       if (this.game && this.$fire.auth.currentUser) {
@@ -35,22 +53,28 @@ export default {
       }
       return false;
     },
+    isCardMaster() {
+      if (this.game && this.game.cardMaster > -1) {
+        console.log("card master");
+        return (
+          this.game.players[this.game.cardMaster].id ===
+          this.$fire.auth.currentUser.uid
+        );
+      }
+      return false;
+    },
   },
-
   async mounted() {
     // set reference to game-document:
     const ref = this.$fire.firestore
       .collection("games")
       .doc(this.$route.params.game);
-
     // save ref locally for future firebase-actions
     this.gameRef = ref;
-
     // subscribe to changes in the game-doc:
     ref.onSnapshot((doc) => {
       this.game = doc.data();
     });
-
     //keep checking if user is logged in:
     this.$fire.auth.onAuthStateChanged((user) => {
       if (user) {
@@ -60,7 +84,6 @@ export default {
     });
     await this.$store.dispatch("bindDecks");
   },
-
   methods: {
     async addPlayer(playerName) {
       //adding player to users collection:
@@ -70,7 +93,6 @@ export default {
         .collection("users")
         .doc(uid)
         .set({ name: playerName });
-
       //adding player to current game:
       this.gameRef.update({
         players: this.$fireModule.firestore.FieldValue.arrayUnion({
@@ -81,30 +103,19 @@ export default {
         }),
       });
     },
-
     async startGame() {
       await this.gameRef.update({
         gameStarted: true,
       });
-      //make heap
+      //make heap:
       await this.makeHeap();
-
       //deal cards
-      this.game.players.forEach((player) => {
-        while (player.hand.length < 10) {
-          const cardNumber = Math.floor(
-            Math.random() * this.game.whitePile.length
-          );
-          player.hand.push(this.game.whitePile[cardNumber]);
-        }
-      });
-
+      await this.dealCards();
       //determine start player/master
-      this.gameRef.update({
+      await this.gameRef.update({
         cardMaster: 0,
       });
     },
-
     async makeHeap() {
       const allDecks = this.$store.state.decks;
       const blackPile = [];
@@ -121,6 +132,19 @@ export default {
         whitePile: whitePile,
       });
     },
+    async dealCards() {
+      this.game.players.forEach((player) => {
+        while (player.hand.length < 10) {
+          const cardNumber = Math.floor(
+            Math.random() * this.game.whitePile.length
+          );
+          player.hand.push(this.game.whitePile[cardNumber]);
+        }
+      });
+      await this.gameRef.update({
+        players: this.game.players,
+      });
+    },
   },
 };
 </script>
@@ -133,7 +157,6 @@ export default {
   align-content: center;
   gap: 20px;
 }
-
 .game-lobby {
   display: flex;
   flex-direction: column;

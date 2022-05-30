@@ -35,7 +35,6 @@ export default {
       chosenDecks: [],
     };
   },
-
   computed: {
     deckNames() {
       if (this.$store.state.decks !== null)
@@ -43,7 +42,6 @@ export default {
       return [];
     },
   },
-
   // async mounted() {
   //   try {
   //     await this.$store.dispatch("bindGameCollection");
@@ -52,7 +50,6 @@ export default {
   //     console.error(e);
   //   }
   // },
-
   async mounted() {
     // this.$fire.firestore
     //   .collection("decks")
@@ -64,7 +61,6 @@ export default {
     //   });
     await this.$store.dispatch("bindDecks");
   },
-
   methods: {
     async createGame() {
       const res = await this.$fire.auth.signInAnonymously();
@@ -90,7 +86,6 @@ export default {
             },
           ],
         });
-
       this.$router.push("/game/" + gameId);
     },
   },
