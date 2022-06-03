@@ -83,6 +83,7 @@ export default {
               id: uid,
               points: 0,
               hand: [],
+              chosenCards: [],
             },
           ],
         });

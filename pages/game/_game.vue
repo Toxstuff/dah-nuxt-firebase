@@ -17,9 +17,14 @@
     >
     <div class="runningGame" v-if="game.gameStarted">
       <v-card elevation="10" outlined dark
-        ><v-card-text>{{ game.blackCard.text }}</v-card-text></v-card
+        ><v-card-text v-if="game.blackCard">{{
+          game.blackCard.text
+        }}</v-card-text></v-card
       >
-      <my-hand :hand="me.hand"></my-hand>
+      <my-hand :hand="me.hand" @chooseCard="choosecard"></my-hand>
+      <v-btn color="accent" elevation="2" @click="lockCards"
+        >Lock in chosen</v-btn
+      >
     </div>
   </v-container>
 </template>
@@ -109,6 +114,7 @@ export default {
           id: uid,
           points: 0,
           hand: [],
+          chosenCards: [],
         }),
       });
     },
@@ -154,6 +160,18 @@ export default {
         players: this.game.players,
       });
     },
+    chooseCard(index) {
+      this.me.chosenCards.push(index);
+    },
+    async lockCard(){
+      const playerIndex = this.game.players.findIndex(
+        (player) => player.id === this.$fire.auth.currentUser.uid
+      );
+      await this.gameRef.update({
+        players: this.game.players,
+      });
+    },
+    }
   },
 };
 </script>

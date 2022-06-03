@@ -1,8 +1,12 @@
 <template>
   <div>
-    <v-card v-for="card in hand" :key="card.text">
-      <v-card-text>{{ cards.text }}</v-card-text></v-card
+    <v-card
+      v-for="(card, index) in hand"
+      :key="card.text"
+      @click="chooseCard(index)"
     >
+      <v-card-text>{{ card.text }}</v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -12,6 +16,11 @@ export default {
     hand: {
       type: Array,
       required: true,
+    },
+  },
+  methods: {
+    chooseCard(index) {
+      this.$emit("chooseCard", index);
     },
   },
 };
